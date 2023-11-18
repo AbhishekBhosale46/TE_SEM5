@@ -255,11 +255,15 @@ class Pass1{
                         ic += "(" + opt.get_class(op1) + "," + to_string(opt.get_code(op1)) + ") ";
                     }
                     else if(opt.get_class(op1)=="CC"){
-
+                        ic += "(" + opt.get_class(op1) + "," + to_string(opt.get_code(op1)) + ") ";
                     }else{
-                        symTab.push_back({op1, lc});
-                        ic += "(S," + to_string(stPtr) + ") ";
-                        stPtr++;
+                        if(!isInSymTab(op1)){
+                            symTab.push_back({op1, -1});
+                            ic += "(S," + to_string(stPtr) + ") ";
+                            stPtr++;
+                        }else{
+                            // ITERATE IN SYMTAB AND GET INDEX OF THE SYMB, AND GENERATE IC USING THAT INDX
+                        }
                     }
                 }
 
@@ -278,6 +282,8 @@ class Pass1{
                             symTab.push_back({op2, -1});
                             ic += "(S," + to_string(stPtr) + ") ";
                             stPtr++;
+                        }else{
+                            // ITERATE IN SYMTAB AND GET INDEX OF THE SYMB, AND GENERATE IC USING THAT INDX
                         }
                     }
                 }
@@ -442,8 +448,6 @@ class Pass1{
             }
             else if(mnemonic == "LTORG"){
 
-                int currLc = this->lc;
-
                 for(int l=ptPtr; l<litTab.size(); l++){
 
                     litTab[l].second = this->lc;
@@ -453,12 +457,13 @@ class Pass1{
                     lit = lit.substr(2, lit.length()-3);
                     ic += "(DL,01) (C," + lit + ") ";
 
-                    // cout<<ic<<endl;
                     iCode.push_back({lc,ic});
 
                     ic="";
 
                 }
+
+                ptPtr++;
 
             }
 
